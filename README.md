@@ -201,7 +201,7 @@ With our base metrics defined, we can finetune the base and try other models to 
 
 We will start by testing different regularization techniques to address our moderate $R^2$ and improve our error metrics in this high dimensional space.
 
-### Lasso
+### <div align="center">Lasso</div>
 
 <div align="center">
 
@@ -220,7 +220,7 @@ We will start by testing different regularization techniques to address our mode
 </div>
 <div align="center">Looks like our Lasso model did slightly worse in error metrics and significantly worse in $R^2$. </div>
 
-### Ridge
+### <div align="center">Ridge</div>
 
 
 
