@@ -8,9 +8,38 @@ from skopt.utils import use_named_args
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 
 class MetricsCV():
-    ''' Create CV metrics with hyperparameter tuning'''
+    """
+    Manages cross-validation metrics with hyperparameter tuning options including Bayesian Optimization or RandomizedSearchCV.
+    
+    Attributes:
+        model (BaseEstimator): The pipeline including preprocessing steps. The model within the pipeline must be named 'model' for it to be
+        called on within the class.
+        name (str): Human-readable name for the model, used in reporting.
+        X_train (pd.DataFrame): Training feature dataset.
+        y_train (pd.Series): Training target dataset.
+        random_state (Optional[int]): Random state to ensure reproducibility.
+    
+    Methods:
+        objective(space, scoring, n_calls, n_initial_points, verbose, pipe, X_train, y_train, kfolds, return_train_score, val_df):
+            Conducts Bayesian optimization and returns a DataFrame of validation scores along with the best estimator.
+        
+        run_rcv(params, scoring, verbose, pipe, X_train, y_train, n_iter, kfolds, return_train_score):
+            Executes a RandomizedSearchCV to find the best parameters and returns them.
+        
+        rcv_metrics(rcv_instance, X_train, y_train, val_df):
+            Computes and returns cross-validation scores from a RandomizedSearchCV instance as a DataFrame.
+        
+        test_metrics(X_test, y_test, test_pipe, X_train, y_train, test_df):
+            Evaluates the model on the test set and returns test metrics including RMSE, MAE, and R2 scores as a DataFrame.
+    """
+
+    
 
     def __init__(self,pipe,pipe_name,X_train,y_train,random_state=None):
+
+        """
+        Initializes the MetricsCV instance with the pipeline, its name, training data, and an optional random state.
+        """
 
         self.model = pipe
         self.name = pipe_name
@@ -20,20 +49,29 @@ class MetricsCV():
 
     
     def objective(self,space,scoring, n_calls=50, n_initial_points=10, verbose=None, pipe=None,
-                  X_train=None,y_train=None,kfolds=5,return_train_score=True, val_df=None, n_points=None,n_jobs=None):
+                  X_train=None,y_train=None,kfolds=5,return_train_score=True, val_df=None):
+
+        """
+        Defines and executes Bayesian optimization to minimize the cross-validation loss and returns updated validation scores and the best
+        estimator.
+        
+        If validation dataframe was provided as an argument, new
+        validation dataframe is merged
+        """
 
         # Ensuring that the pipe and data used are either passed to the method or the instance defaults
         obj_pipe = pipe if pipe else self.model
         obj_X = X_train if X_train else self.X_train
         obj_y = y_train if y_train else self.y_train
 
+        # Sets up space to be used as parameters within the objective_function()
         @use_named_args(space)
         def objective_function(**params):
             # Set the hyperparameters on the model
             self.model['model'].set_params(**params)
             
             cv_results = cross_validate(obj_pipe, obj_X, obj_y, 
-                                             scoring=scoring, cv=kfolds, return_train_score=return_train_score,n_jobs=n_jobs)
+                                             scoring=scoring, cv=kfolds, return_train_score=return_train_score)
             mean_test_score = -np.mean(cv_results['test_score'])
             if return_train_score:
                 mean_train_score = -np.mean(cv_results['train_score'])
@@ -43,7 +81,7 @@ class MetricsCV():
 
         # Running Bayesian optimization
         res_gp = gp_minimize(objective_function, space, n_calls=n_calls, random_state=self.random_state, 
-                             verbose=verbose, n_initial_points=n_initial_points,n_points=n_points)
+                             verbose=verbose, n_initial_points=n_initial_points)
         
         param_names = [dim.name for dim in space]  # Names like 'alpha'
         param_values = res_gp.x  # Best values found for these parameters
@@ -74,26 +112,33 @@ class MetricsCV():
         return new_val_df, self.best_estimator_
 
 
-    def run_rcv(self,params,scoring,verbose=None, pipe=None, X_train=None, y_train=None, n_jobs=None, 
-                n_iter=10, kfolds=5, return_train_score=True):
+    def run_rcv(self,params,scoring,verbose=None, pipe=None, X_train=None, y_train=None, n_iter=10, kfolds=5, return_train_score=True):
+
+        """
+        Executes RandomizedSearchCV to find the best model parameters.
+        """
 
         rcv_pipe = pipe if pipe else self.model 
         rcv_X = X_train if X_train else self.X_train
         rcv_y = y_train if y_train else self.y_train
 
         self.rcv_instance = RandomizedSearchCV(rcv_pipe,param_distributions=params,scoring=scoring,
-                        return_train_score=return_train_score,n_iter=n_iter,verbose=verbose,cv=kfolds, n_jobs=n_jobs)
+                        return_train_score=return_train_score,n_iter=n_iter,verbose=verbose,cv=kfolds)
         
         self.rcv_instance.fit(rcv_X,rcv_y)
         
         return self.rcv_instance.best_params_
     
     def rcv_metrics(self,rcv_instance=None,X_train=None,y_train=None,val_df=None):
+
+        """
+        Calculates and returns the cross-validation and training scores as a DataFrame. If validation dataframe was provided as
+        an argument, new validation dataframe is merged
+        """
         
         rcv_X = X_train if X_train else self.X_train
         rcv_y = y_train if y_train else self.y_train
         rcv_instance = rcv_instance if rcv_instance is not None else self.rcv_instance
-        self.best_estimator_ = rcv_instance.best_estimator_
 
 
         self.cv_train_mean = -np.mean(rcv_instance.cv_results_['mean_train_score'])
@@ -108,10 +153,15 @@ class MetricsCV():
             new_val_df = pd.concat([val_df, new_val_df])
             new_val_df.index = range(len(new_val_df))
         
-        return new_val_df, self.best_estimator_
+        return new_val_df, rcv_instance.best_estimator_
     
     
     def test_metrics(self,X_test,y_test,test_pipe=None,X_train=None, y_train=None,test_df=None):
+
+        """
+        Evaluates the model on test data and returns various performance metrics (RMSE, MAE, R^2). If test dataframe was
+        provided as an argument, new validation dataframe is merged
+        """
         
         test_model = test_pipe if test_pipe else self.best_estimator_
         X_train_full = X_train if X_train else self.X_train
