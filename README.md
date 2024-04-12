@@ -61,16 +61,16 @@ Transformations
 
 Before moving onto defining the target, the numerical distribution of the `Data_Value` and `TotalPopulation` columns is evaluated. There are some outliers in both columns we should consider visualizing and potentially dropping to get a more accurate representation of our distributions.
 
-| Statistic | Data_Value  | TotalPopulation |
-|-----------|-------------|-----------------|
-| count     | 808694.000  | 808694.000      |
-| mean      | 30.404      | 103356.9        |
-| std       | 24.767      | 331892.8        |
-| min       | 0.000       | 57.0            |
-| 25%       | 10.700      | 10806.0         |
-| 50%       | 22.100      | 25629.0         |
-| 75%       | 40.200      | 67490.0         |
-| max       | 99.400      | 10105520.0      |
+| Statistic |  Data_Value  | TotalPopulation |
+|:---------:|:------------:|:---------------:|
+| count     | 808,694.000  | 808,694.000     |
+| mean      | 30.404       | 103,356.9       |
+| std       | 24.767       | 331,892.8       |
+| min       | 0.000        | 57.0            |
+| 25%       | 10.700       | 10,806.0        |
+| 50%       | 22.100       | 25,629.0        |
+| 75%       | 40.200       | 67,490.0        |
+| max       | 99.400       | 10,105,520.0    |
 
 We should also normalizing the `Data_Value` column since the values are represented differently based on `Data_Value_Type`. We can also consider weighing it if we consider one type more important than another.
 
@@ -82,19 +82,21 @@ Visualizing these features, we can estimate that any `Data_Value` above ~85 is a
 
 Taking closer at the number of rows that are outside of the the IQR, there are quite a few rows with population and data value outside of bounds.
 
-| Description        | Count   |
-|--------------------|---------|
-| TotalPopulation    | 111,425 |
-| Data_Value         | 15,851  |
+| Description       | Count   |
+|:-----------------:|:-------:|
+| TotalPopulation   | 111,425 |
+| Data_Value        | 15,851  |
+
 
 
 As expected, the `Data_Value_Type` impacts the `Data_Value` outliers
 
-| Metric               | Outliers |
-|----------------------|----------|
-| Crude Prevalence     | 2,117    |
-| Percentage           | 610      |
-| **Total Outliers**   | **5,661**|
+| Metric              | Outliers |
+|:-------------------:|:--------:|
+| Crude Prevalence    | 2,117    |
+| Percentage          | 610      |
+| **Total Outliers**  | **5,661**|
+
 
 > Population doesn't demonstrate the same diffence so we can treat TotalPopulation collectively in the dataset.
 
@@ -116,4 +118,30 @@ Comparing random samples of `Sum_Idx` vs `Data_Value` shows us that there is a l
   <img src="https://github.com/erankova/Capstone/assets/155934070/3059cc02-31d5-436f-8204-a53dc4f85d29" alt="Sum_Idx Distribution">
 </p>
 
-**note:** scaled value confidence intervals are naturally more spread out for scaled values as these values are more centered around the median in our case.
+**note:** scale value error bars represent the variablility around the median, showcasing the 75th percentile at the top and 25th percentile towards the lower end of the bars.
+
+When we create an `Avg_Idx` we now see our geolocation distribution but on a different scale and with more goeographical distinction. 
+
+> This would make sense if for example, this segregation is representing rural vs urban areas.
+
+<p align="center">
+  <img src="https://github.com/erankova/Capstone/assets/155934070/1aa2c1be-3c53-417d-8189-59856f2776ba" alt="Avg_Idx Distribution">
+</p>
+
+Lastly we will add a population weight to each scaled value, this will adjust our results to consider the density of a region when calculating the HDI. The weighted average provides more of a spread than the `Avg_Idx, and the same relationship as the `Avg_Idx` which means population definitely has an impact on the HDI and geolocation does as well.
+
+<p align="center">
+  <img src="https://github.com/erankova/Capstone/assets/155934070/0044d1c9-ec37-4fd0-b6d9-cee8a282fe65" alt="Weighted_Idx Distribution">
+</p>
+
+### Geolocation to HDI Visualization
+
+Before finalizing the decision to use the population weighted HDI, we visualize the index in comparison to population using the `Geolocation`. To do so, we first convert the feature to wkt (well-known text) format for use with the geopandas library.
+
+Looking at population and the HDI across all of the geolocations we can see that the higher the population, the lower the HDI. In particular we can see that in part of the west coast, Florida, and part of the east coast demonstrate this inverse relationship.
+
+> This inverse relationship may make sense when you consider factors such as but not limited to; greater access to care, diversity of services, and public health funding in areas with more population density.
+
+
+
+This further confirms our decision to use population as a weight for our HDI definition.
