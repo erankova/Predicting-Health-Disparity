@@ -18,8 +18,9 @@ For Phase 1 of this initiative we will define a Health Disparity Index (HDI) bas
 
 ## Data Understanding
 
-For this task we will be using CDC provided PLACES and SDOH county data spanning years 2017-2021
-Datasets
+For this task we will be using CDC provided PLACES and SDOH county data spanning years 2017-2021. Our data set contains a total of 28287 rows from the SDOH data and 780890 from the PLACES datasets.
+
+**Datasets**
 - <a href="https://data.cdc.gov/500-Cities-Places/PLACES-Local-Data-for-Better-Health-County-Data-20/dv4u-3x3q/about_data">Local Data for Better Health, County Data 2020 release</a>
 - <a href="https://data.cdc.gov/500-Cities-Places/PLACES-Local-Data-for-Better-Health-County-Data-20/pqpp-u99h/about_data">Local Data for Better Health, County Data 2021 release</a>
 - <a href="https://data.cdc.gov/500-Cities-Places/PLACES-Local-Data-for-Better-Health-County-Data-20/duw2-7jbt/about_data">Local Data for Better Health, County Data 2022 release</a>
@@ -29,3 +30,90 @@ Datasets
 Utilizing all the health measures defined within the cagtegories specified below we will create a custom Health Disparity Index (HDI) as our target for this regression task.
 
 **Categories within which health measures are defined:** Health Outcomes, Prevention, Health Risk Behaviors, Health Status, Disabilities, and Social Determinants of Health
+
+### Feature Exploration
+
+Right away we can tell that there are a few columns that can be dropped
+- Missing too many values
+  - `Data_Value_Footnote_Symbol`
+  - `Data_Value_Footnote`
+  - `Latitude`
+  - `MOE`
+- `Low_Confidence_Limit` and `High_Confidence_Limit` - the SDOH dataset does not have these columns.
+
+> `Geolocatioin` and `Geolocation` are the same feature when checking the source data websites only the 2020 release has a `Geolocatioin` column while the rest have `Geolocation`. `MeasureID` and `MeasureId` have the same issue it seems. These are combined and the misspelled column is dropped.
+
+Transformations
+- Object type and Categorical columns that will need to be transformed
+- Since state should be treated as a categorical variable we should adjust this in our dataset
+- `LocationID` should be an object since this is not an actual continuous variable and is currently an integer
+
+**Additional observations**
+- `Year` can be dropped as it can only provide relevant information for the data we retrieved from the PLACES datasets. Otherwise, we have the same date range as seen in the added SDOH data (2017-2021).
+- Rows with US as the state are dropped as it is an error. `StateDesc` is dropped since it's the same info as `StateAbbr`.
+- `DataSource` is dropped since all of the information is coming from the Behavioral Risk Factor Surveillance System or the 5-year American Community Survey which only contains SDOH data.
+- `Data_Value_Unit` is dropped since all of our data values are in percentages.
+- `Data_Value_Type` will be helpful for interpretation of our predictions since it denotes what percentage the `Data_Value` represents. `DataValueTypeID` corresponds to this feature is dropped since `Data_Value_Type` is more informative. 
+- `CategoryID` corresponds to `Category` so it is dropped since `Category` is easier to interpret.
+- `MeasureId` corresponds the same way to `Measure`. However `Measure` values can be quite lengthy depending on the measure. We also have `Short_Question_Text` corresponding to these features and is more informative than `MeausureId` but shorter than `Measure` so `Short_Question_Text` is kept and create a reference dictionary before dropping the other columns.
+
+### Statistical Analysis
+
+Before moving onto defining the target, the numerical distribution of the `Data_Value` and `TotalPopulation` columns is evaluated. There are some outliers in both columns we should consider visualizing and potentially dropping to get a more accurate representation of our distributions.
+
+| Statistic | Data_Value  | TotalPopulation |
+|-----------|-------------|-----------------|
+| count     | 808694.000  | 808694.000      |
+| mean      | 30.404      | 103356.9        |
+| std       | 24.767      | 331892.8        |
+| min       | 0.000       | 57.0            |
+| 25%       | 10.700      | 10806.0         |
+| 50%       | 22.100      | 25629.0         |
+| 75%       | 40.200      | 67490.0         |
+| max       | 99.400      | 10105520.0      |
+
+We should also normalizing the `Data_Value` column since the values are represented differently based on `Data_Value_Type`. We can also consider weighing it if we consider one type more important than another.
+
+Visualizing these features, we can estimate that any `Data_Value` above ~85 is an outlier. It is harder to determine for `TotalPopulation`. We should look at the values of these more closely.
+
+<p align="center">
+  <img src="https://github.com/erankova/Capstone/assets/155934070/ff7494f9-5c48-4870-b4ff-7ef2acfee85d" alt="Boxplot">
+</p>
+
+Taking closer at the number of rows that are outside of the the IQR, there are quite a few rows with population and data value outside of bounds.
+
+| Description        | Count   |
+|--------------------|---------|
+| TotalPopulation    | 111,425 |
+| Data_Value         | 15,851  |
+
+
+As expected, the `Data_Value_Type` impacts the `Data_Value` outliers
+
+| Metric               | Outliers |
+|----------------------|----------|
+| Crude Prevalence     | 2,117    |
+| Percentage           | 610      |
+| **Total Outliers**   | **5,661**|
+
+> Population doesn't demonstrate the same diffence so we can treat TotalPopulation collectively in the dataset.
+
+The Data Value distribution for each Data Value Type isn't normal. So before we move on using it to create the HDI we want to create a new column with the normalize values using the `RobustScaler` since we have been using IQR to identify outliers.
+
+<p align="center">
+  <img src="https://github.com/erankova/Capstone/assets/155934070/70bf866a-ceca-4ed0-a1ea-81a8c88d6f2e" alt="Data Type Distribution">
+</p>
+
+### Defining Health Disparity Index
+
+After the dataframe is aligned with project goals, the target variable `Health_Disparity_Index` can be defined. 
+
+To start, we will create a general index taking the sum of all scaled values for each location and create a feature in the full dataset to represent this disparity index. 
+
+Comparing random samples of `Sum_Idx` vs `Data_Value` shows us that there is a lot more uniformity in the `Scaled_Value` before aggregation of all of the data value types. This makes sense since our aggregated `Sum_Idx` is combining all values per geolocation, creating and therefore creates less variability when visualizing by location.
+
+<p align="center">
+  <img src="https://github.com/erankova/Capstone/assets/155934070/3059cc02-31d5-436f-8204-a53dc4f85d29" alt="Sum_Idx Distribution">
+</p>
+
+**note:** scaled value confidence intervals are naturally more spread out for scaled values as these values are more centered around the median in our case.
