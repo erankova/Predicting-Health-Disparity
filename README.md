@@ -204,15 +204,21 @@ We will start by testing different regularization techniques to address our mode
 ### Lasso
 
 <div align="center">
+
 | Model Name | Val Train Score | Val Test Score |
 |------------|-----------------|----------------|
 | Lasso      | 0.047102        | 0.047102       |
 
+</div>
+
+<div align="center">
+
 | Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|-------------|------------|-----------|-----------|-----------|-----------|
 | Lasso      | 0.047084    | 0.047078   | 0.464568  | 0.464604  | 0.039646  | 0.039654  |
+
 </div>
-Looks like our Lasso model did slightly worse in error metrics and significantly worse in $R^2$. 
+<div align="center">Looks like our Lasso model did slightly worse in error metrics and significantly worse in $R^2$. </div>
 
 ### Ridge
 
