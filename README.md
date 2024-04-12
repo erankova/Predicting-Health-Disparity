@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://media.licdn.com/dms/image/C4D12AQE3ln6Z4Mo8Pw/article-cover_image-shrink_720_1280/0/1642087174753?e=1718236800&v=beta&t=etvT9WV2qS3g7hAnCds-vQIn3ob9JqJn9vvB9annTWM">
 </p>
-<a href="https://www.linkedin.com/pulse/benefits-population-health-management-phm-amazing-charts/">Source</a>
+<a href="https://www.linkedin.com/pulse/benefits-population-health-management-phm-amazing-charts/">Image Source</a>
 
 ## Business Problem and Understanding
 
@@ -165,3 +165,77 @@ Looking at population and the HDI across all of the geolocations we can see that
 </p>
 
 This further confirms our decision to use population as a weight for our HDI definition.
+
+## Data Preparation
+
+Since our dataset is so large we will first train our model on a smaller training set to save computational power and time. Columns we used to create our `Weighted_Idx` are dropped. 
+
+> In future iterations would want to consider using `Geolocation` to create location features and explore spatial relationships. However, to keep computational cost relatively low, we will note this as a Phase 2 addition. 
+
+`StratifiedShuffleSplit` is used to create subsets of our data while maintaining proportions of the target variable. Running a subset of the data will give us a way to understand model performance while maintaining computational efficiency. Once best fitting model is identified, we will run it on our extra hold out data that wasn't used for training to further validate our results.
+
+### Base Model and Metrics
+
+`StandardScaler` is used on all our numerical data to make sure we are comparing our features on the same scale. And `OneHotEncoder` is used on the rest of the object or categorical categories. 
+
+Our base model will be a standard `LinearRegression`.
+
+<div align="center">
+
+| Metric        | Train Value         | Test Value         |
+|---------------|---------------------|--------------------|
+| RMSE          | 0.036465476         | 0.036466192        |
+| R-Squared     | 0.678842896         | 0.678760292        |
+| MAE           | 0.032773953         | 0.032738450        |
+
+</div>
+It looks like the primary RMSE metric is pretty good. However, it is expected that it would be small considering the range of our HDI so we will aim to improve these further. $R^2$ can also stand to improve. Thankfully, we don't see much overfitting or underfitting.
+
+We will keep these metrics in mind as we test other models.
+
+> Even after dropping a significant amount of features, we are left with fairly high dimentionality with 4425 features. This is something we will want to consider as we test and refine our models.
+
+## Modeling
+
+With our base metrics defined, we can finetune the base and try other models to improve our metrics. 
+
+We will start by testing different regularization techniques to address our moderate $R^2$ and improve our error metrics in this high dimensional space.
+
+### Lasso
+
+<div align="center">
+| Model Name | Val Train Score | Val Test Score |
+|------------|-----------------|----------------|
+| Lasso      | 0.047102        | 0.047102       |
+
+| Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|-------------|------------|-----------|-----------|-----------|-----------|
+| Lasso      | 0.047084    | 0.047078   | 0.464568  | 0.464604  | 0.039646  | 0.039654  |
+</div>
+Looks like our Lasso model did slightly worse in error metrics and significantly worse in $R^2$. 
+
+### Ridge
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
