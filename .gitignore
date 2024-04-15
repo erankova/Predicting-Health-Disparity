@@ -1,11 +1,11 @@
-Other Configuration Docs
+__pycache__
+Env_Requirements
+metrics_cv.py
 requirements.txt
 Deployment.py
 environment.yml
-metrics_cv.py
 .gitattributes
 Data/df_pw_idx.csv
-__pycache__
 Data/PLACES_2020-2021.csv
 Data/df_all_clean.csv
 .ipynb_checkpoints
