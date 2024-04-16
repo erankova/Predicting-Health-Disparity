@@ -182,11 +182,11 @@ Our base model will be a standard `LinearRegression`.
 
 <div align="center">
 
-| Metric           | Train Value             | Test Value             |
-|------------------|-------------------------|------------------------|
-| RSME             | 0.064460562             | 0.064447094            |
-| R-Squared        | -0.003556739            | -0.003356053           |
-| MAE              | 0.052600814             | 0.052607878            |
+| Metric           | Train Value | Test Value  |
+|------------------|-------------|-------------|
+| RSME             | 0.064461    | 0.064447    |
+| R-Squared        | -0.003557   | -0.003356   |
+| MAE              | 0.052601    | 0.052608    |
 
 </div>
 
@@ -208,16 +208,16 @@ Let's see if we can improve our metrics with a linear model as well as utilize t
 
 <div align="center">
 
-| Model Name | Val Train Score | Val Test Score |
-|------------|-----------------|----------------|
-| Lasso      | 0.059743        | 0.05975        |
+| Model Name | Val Train RMSE | Val Test RMSE |
+|------------|----------------|---------------|
+| Lasso      | 0.060729       | 0.060735      |
 
 </div>
 <div align="center">
 
-| Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
-|------------|-------------|------------|-----------|-----------|-----------|-----------|
-| Lasso      | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
+| Model Name | Train RMSE | Test RMSE | Train R2 | Test R2  | Train MAE | Test MAE  |
+|------------|------------|-----------|----------|----------|-----------|-----------|
+| Lasso      | 0.046876   | 0.046855  | 0.469300 | 0.469648 | 0.039506  | 0.039506  |
 
 </div>
 
@@ -227,18 +227,18 @@ It looks like the metrics are a lot more balanced! The primary RMSE metric is pr
 
 <div align="center">
 
-| Model Name | Val Train Score | Val Test Score |
-|------------|-----------------|----------------|
-| Lasso      | 0.059743        | 0.059750       |
-| Ridge      | 0.040508        | 0.041063       |
+| Model Name | Val Train RMSE | Val Test RMSE |
+|------------|----------------|---------------|
+| Ridge      | 0.041158       | 0.041759      |
+| Lasso      | 0.060729       | 0.060735      |
 
 </div>
 <div align="center">
 
-| Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
-|------------|-------------|------------|-----------|-----------|-----------|-----------|
-| Ridge      | 0.036465    | 0.036466   | 0.678844  | 0.678765  | 0.032773  | 0.032738  |
-| Lasso      | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
+| Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Ridge      | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
+| Lasso      | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
 
 </div>
 
@@ -252,20 +252,20 @@ To address the low $R^2$ and lack of representation of the variance in our data 
 
 <div align="center">
 
-| Model Name     | Val Train Score | Val Test Score |
-|----------------|-----------------|----------------|
-| Lasso          | 0.059743        | 0.059750       |
-| Ridge          | 0.040508        | 0.041063       |
-| Neural Network | 0.041016        | 0.042157       |
+| Model Name     | Val Train RMSE | Val Test RMSE |
+|----------------|----------------|---------------|
+| Ridge          | 0.041158       | 0.041759      |
+| Lasso          | 0.060729       | 0.060735      |
+| Neural Network | 0.040854       | 0.042289      |
 
 </div>
 <div align="center">
 
-| Model Name     | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
-|----------------|-------------|------------|-----------|-----------|-----------|-----------|
-| Ridge          | 0.036465    | 0.036466   | 0.678844  | 0.678765  | 0.032773  | 0.032738  |
-| Neural Network | 0.026907    | 0.045306   | 0.825139  | 0.504140  | 0.017061  | 0.033936  |
-| Lasso          | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
+| Model Name     | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|----------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Ridge          | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
+| Neural Network | 0.029011   | 0.046562  | 0.796722  | 0.476264  | 0.018909  | 0.034491  |
+| Lasso          | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
 
 </div>
 Comparing our results not unexpectedly, the Neural Network is overfitting but the train scores are improving! 
@@ -276,37 +276,73 @@ Let's see if we can get the best of the strongest models so far to get a holisti
 
 <div align="center">
 
-| Model Name     | Val Train Score | Val Test Score |
-|----------------|-----------------|----------------|
-| Lasso          | 0.059743        | 0.059750       |
-| Ridge          | 0.040508        | 0.041063       |
-| Neural Network | 0.041016        | 0.042157       |
-| Voting         | 0.037048        | 0.038109       |
+| Model Name     | Val Train RMSE | Val Test RMSE |
+|----------------|----------------|---------------|
+| Voting         | 0.036254       | 0.037517      |
+| Ridge          | 0.041158       | 0.041759      |
+| Neural Network | 0.040854       | 0.042289      |
+| Lasso          | 0.060729       | 0.060735      |
 
 </div>
 <div align="center">
 
-| Model Name     | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
-|----------------|-------------|------------|-----------|-----------|-----------|-----------|
-| Ridge          | 0.036465    | 0.036466   | 0.678844  | 0.678765  | 0.032773  | 0.032738  |
-| Voting         | 0.036318    | 0.036575   | 0.681442  | 0.676843  | 0.032273  | 0.032510  |
-| Neural Network | 0.026907    | 0.045306   | 0.825139  | 0.504140  | 0.017061  | 0.033936  |
-| Lasso          | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
+| Model Name     | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|----------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Ridge          | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
+| Voting         | 0.036248   | 0.036500  | 0.682663  | 0.678172  | 0.032410  | 0.032640  |
+| Neural Network | 0.029011   | 0.046562  | 0.796722  | 0.476264  | 0.018909  | 0.034491  |
+| Lasso          | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
 
 </div>
 The `VotingRegressor` helped with the overfitting, however our scores are about the same as our `Ridge` model. It's possible these models are capturing different types of data. 
 
 ### <div align="center">StackingRegressor</div>
 
-Lastly, we will try another ensemble model with the `StackingRegressor`. We are going to include the `VotingRegressor` to see if we can capture more of the patterns through stacking.
+Lastly, we will try another ensemble model with the `StackingRegressor`.
 
-[TABLE PLACEHOLDER]
+<div align="center">
 
-While not a huge improvement all of the metrics improved slightly with the `StackingRegressor`
+| Model Name     | Val Train RMSE | Val Test RMSE |
+|----------------|----------------|---------------|
+| Voting         | 0.036254       | 0.037517      |
+| Ridge          | 0.041158       | 0.041759      |
+| Neural Network | 0.040854       | 0.042289      |
+| Lasso          | 0.060729       | 0.060735      |
+| Stacking       | 0.036077       | 0.037500      |
+
+</div>
+<div align="center">
+
+| Model Name     | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|----------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Stacking       | 0.036072   | 0.036193  | 0.685734  | 0.683563  | 0.032320  | 0.032409  |
+| Ridge          | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
+| Voting         | 0.036248   | 0.036500  | 0.682663  | 0.678172  | 0.032410  | 0.032640  |
+| Neural Network | 0.029011   | 0.046562  | 0.796722  | 0.476264  | 0.018909  | 0.034491  |
+| Lasso          | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
+
+</div>
+While not a huge improvement all of the metrics improved slightly with the `StackingRegressor`.
 
 ### <div align="center">Final Testing</div>
 
-[TABLE PLACEHOLDER]
+<div align="center">
+
+| Model Name        | Test RMSE | Test R2   | Test MAE  |
+|-------------------|-----------|-----------|-----------|
+| Stacking Holdout  | 0.037734  | 0.662524  | 0.033406  |
+| Base Holdout      | 0.066138  | -0.036768 | 0.053976  |
+
+</div>
+<div align="center">
+
+| Model Name    | Test RMSE | Test R2   | Test MAE  |
+|---------------|-----------|-----------|-----------|
+| Stacking Test | 0.037743  | 0.662622  | 0.033416  |
+| Base Test     | 0.066209  | -0.038177 | 0.054052  |
+
+</div>
+
 
 Looks like all of our results line up as expected when compared to the stacking model!
 
