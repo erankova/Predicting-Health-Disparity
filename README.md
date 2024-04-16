@@ -213,7 +213,6 @@ Let's see if we can improve our metrics with a linear model as well as utilize t
 | Lasso      | 0.059743        | 0.05975        |
 
 </div>
-
 <div align="center">
 
 | Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
