@@ -182,32 +182,35 @@ Our base model will be a standard `LinearRegression`.
 
 <div align="center">
 
-| Metric        | Train Value         | Test Value         |
-|---------------|---------------------|--------------------|
-| RMSE          | 0.036465476         | 0.036466192        |
-| R-Squared     | 0.678842896         | 0.678760292        |
-| MAE           | 0.032773953         | 0.032738450        |
+| Metric           | Train Value             | Test Value             |
+|------------------|-------------------------|------------------------|
+| RSME             | 0.064460562             | 0.064447094            |
+| R-Squared        | -0.003556739            | -0.003356053           |
+| MAE              | 0.052600814             | 0.052607878            |
 
 </div>
-It looks like the primary RMSE metric is pretty good. However, it is expected that it would be small considering the range of our HDI so we will aim to improve these further. $R^2$ can also stand to improve. Thankfully, we don't see much overfitting or underfitting.
+
+Our error metrics don't look too bad, but the $R^2$ is way off! Let's try other models to see how our predictions can improve.
 
 We will keep these metrics in mind as we test other models.
 
-> Even after dropping a significant amount of features, we are left with fairly high dimentionality with 4425 features. This is something we will want to consider as we test and refine our models.
+> Even after dropping a significant amount of features, we are left with fairly high dimentionality with **4425 features**. This is something we will want to consider as we test and refine our models.
 
 ## Modeling
 
-With our base metrics defined, we can finetune the base and try other models to improve our metrics. 
+With our base metrics defined, we can finetune the base and try other models to improve our metrics. A custom class is used to cross validate and tune our parameters with an option to use `RandomizedSearchCV` or `gp_minimize`. For those cases where hyperparameter tuning isn't necessary, there is an option to only cross validate.
 
-We will start by testing different regularization techniques to address our moderate $R^2$ and improve our error metrics in this high dimensional space.
+We will start by testing different linear modesl with regularization techniques to address our moderate $R^2$ and improve our error metrics in this high dimensional space. 
 
-### <div align="center">Lasso</div>
+### <div align="center">Lasso Regularization</div>
+
+Let's see if we can improve our metrics with a linear model as well as utilize the feature selection capabilities.
 
 <div align="center">
 
 | Model Name | Val Train Score | Val Test Score |
 |------------|-----------------|----------------|
-| Lasso      | 0.047102        | 0.047102       |
+| Lasso      | 0.059743        | 0.05975        |
 
 </div>
 
@@ -215,19 +218,122 @@ We will start by testing different regularization techniques to address our mode
 
 | Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|-------------|------------|-----------|-----------|-----------|-----------|
-| Lasso      | 0.047084    | 0.047078   | 0.464568  | 0.464604  | 0.039646  | 0.039654  |
+| Lasso      | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
 
 </div>
-<div align="center">Looks like our Lasso model did slightly worse in error metrics and significantly worse in $R^2$. </div>
 
-### <div align="center">Ridge</div>
+It looks like the metrics are a lot more balanced! The primary RMSE metric is pretty good. However, it is expected that it would be small considering the range of our HDI so we will aim to improve these further. $R^2$ can also stand to improve, though it looks a lot better than our base model. Thankfully, there isn't much overfitting or underfitting.
 
+### <div align="center">Ridge Regularization</div>
 
+<div align="center">
 
+| Model Name | Val Train Score | Val Test Score |
+|------------|-----------------|----------------|
+| Lasso      | 0.059743        | 0.059750       |
+| Ridge      | 0.040508        | 0.041063       |
 
+</div>
+<div align="center">
 
+| Model Name | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|-------------|------------|-----------|-----------|-----------|-----------|
+| Ridge      | 0.036465    | 0.036466   | 0.678844  | 0.678765  | 0.032773  | 0.032738  |
+| Lasso      | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
 
+</div>
+<div align="center">
+The Ridge model definitely helped lower the error metrics as well as raise $R^2$ vs the Lasso model! It would be best to try to raise the $R^2$ some more while keeping error metrics low..
 
+### <div align="center">Neural Network</div>
+
+To address the low $R^2$ and lack of representation of the variance in our data we will work on a neural network using the `keras` within the `tensorflow` library.
+
+> The `KerasRegression` wrapper will be used to insert our neural network into the pipeline.
+
+<div align="center">
+
+| Model Name     | Val Train Score | Val Test Score |
+|----------------|-----------------|----------------|
+| Lasso          | 0.059743        | 0.059750       |
+| Ridge          | 0.040508        | 0.041063       |
+| Neural Network | 0.041016        | 0.042157       |
+
+</div>
+<div align="center">
+
+| Model Name     | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
+|----------------|-------------|------------|-----------|-----------|-----------|-----------|
+| Ridge          | 0.036465    | 0.036466   | 0.678844  | 0.678765  | 0.032773  | 0.032738  |
+| Neural Network | 0.026907    | 0.045306   | 0.825139  | 0.504140  | 0.017061  | 0.033936  |
+| Lasso          | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
+
+</div>
+Comparing our results not unexpectedly, the Neural Network is overfitting but the train scores are improving! 
+
+### <div align="center">VotingRegressor</div>
+
+Let's see if we can get the best of the strongest models so far to get a holistic improvement in metrics. Hopefully this addresses the overfitting seen in the Neural Network while raising our scores.
+
+<div align="center">
+
+| Model Name     | Val Train Score | Val Test Score |
+|----------------|-----------------|----------------|
+| Lasso          | 0.059743        | 0.059750       |
+| Ridge          | 0.040508        | 0.041063       |
+| Neural Network | 0.041016        | 0.042157       |
+| Voting         | 0.037048        | 0.038109       |
+
+</div>
+<div align="center">
+
+| Model Name     | Train Score | Test Score | Train R2  | Test R2   | Train MAE | Test MAE  |
+|----------------|-------------|------------|-----------|-----------|-----------|-----------|
+| Ridge          | 0.036465    | 0.036466   | 0.678844  | 0.678765  | 0.032773  | 0.032738  |
+| Voting         | 0.036318    | 0.036575   | 0.681442  | 0.676843  | 0.032273  | 0.032510  |
+| Neural Network | 0.026907    | 0.045306   | 0.825139  | 0.504140  | 0.017061  | 0.033936  |
+| Lasso          | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
+
+</div>
+The `VotingRegressor` helped with the overfitting, however our scores are about the same as our `Ridge` model. It's possible these models are capturing different types of data. 
+
+### <div align="center">StackingRegressor</div>
+
+Lastly, we will try another ensemble model with the `StackingRegressor`. We are going to include the `VotingRegressor` to see if we can capture more of the patterns through stacking.
+
+[TABLE PLACEHOLDER]
+
+While not a huge improvement all of the metrics improved slightly with the `StackingRegressor`
+
+### <div align="center">Final Testing</div>
+
+[TABLE PLACEHOLDER]
+
+Looks like all of our results line up as expected when compared to the stacking model!
+
+## Final Evaluation & Conclusion
+
+**Recommendations**
+
+In this first itteration of the model, we were able to maintain fairly low error in which the HDI is accurate within .04 points of the index. While error is low, it's worth noting the index itself, is scaled with a high of ~0.40. With low error, we can be confident in the accuracy of the predictions. The $R^2$, while accounting for more than 50% of the variance in the data, could have been improved further given the time and resources. 
+
+Overall, the model is ready to be put to use as a resource for validation of existing opportunities to make care accessible where HDI is lowest. The model in current state, should not be record of truth but rather an additional resource. With additional time and resources clients would be to invest in a more robust predictive system.
+
+**Data Limitation and Future Considerations:**
+
+Our data set is quite large, while strategies were taken to compensate for the lack of machinery able to efficiently handle this amount of data, in future iterations it would be recommended to invest in more powerful processing to implement more advanced techniques such as `GridSearchCV` that may be more costly.
+
+In addition, since we have `Geolocation` available we would want to create location features and explore spatial relationships through methods such as proximity clustering.
+
+We also had to drop the year associeated with each record. In the future, we would either want to seek to add a year to SDOH measure records or conduct a sub analysis of the other categories provided in the PLACES datasets.
+
+## Repository Structure
+├── Data
+├── Images
+├── .gitignore
+├── Predicting_Health_Disparity.pdf
+├── Predicting_Health_Disparity.ipynb
+└── README.md
 
 
 
