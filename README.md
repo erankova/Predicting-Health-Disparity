@@ -242,7 +242,7 @@ It looks like the metrics are a lot more balanced! The primary RMSE metric is pr
 | Lasso      | 0.047084    | 0.047077   | 0.464569  | 0.464605  | 0.039646  | 0.039654  |
 
 </div>
-<div align="center">
+
 The Ridge model definitely helped lower the error metrics as well as raise $R^2$ vs the Lasso model! It would be best to try to raise the $R^2$ some more while keeping error metrics low..
 
 ### <div align="center">Neural Network</div>
