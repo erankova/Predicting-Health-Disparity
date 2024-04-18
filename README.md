@@ -10,9 +10,6 @@
 ## Business Problem and Understanding
 
 **Stakeholders:** Company executives specializing in operational expansion to improve public health prevention where it is most needed.
-## [link placeholder]
-**Presentation:**
-**Deployment:**
 
 As technology evolves, public health and healthcare in particular has long been been lagging behind. In recent years, more companies are leaning on data and technology to inform growth opportunities with the goal of helping those most in need.
 
