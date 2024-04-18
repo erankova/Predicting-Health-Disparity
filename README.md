@@ -364,7 +364,8 @@ In addition, since we have `Geolocation` available we would want to create locat
 
 We also had to drop the year associeated with each record. In the future, we would either want to seek to add a year to SDOH measure records or conduct a sub analysis of the other categories provided in the PLACES datasets.
 
-## Repository Structure
+### Repository Structure
+
 ├── Data
 ├── Images
 ├── .gitignore
