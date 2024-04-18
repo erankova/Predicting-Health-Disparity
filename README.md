@@ -175,7 +175,7 @@ Since our dataset is so large we will first train our model on a smaller trainin
 
 > In future iterations would want to consider using `Geolocation` to create location features and explore spatial relationships. However, to keep computational cost relatively low, we will note this as a Phase 2 addition. 
 
-`StratifiedShuffleSplit` is used to create subsets of our data while maintaining proportions of the target variable. Running a subset of the data will give us a way to understand model performance while maintaining computational efficiency. Once best fitting model is identified, we will run it on our extra hold out data that wasn't used for training to further validate our results.
+A subset is created to make sure that we are able to understand model performance while maintaining computational efficiency. Once we have found the best fitting model, we will run it on our extra hold out data we didn't train on, further validating our results.
 
 ### Base Model and Metrics
 
@@ -185,46 +185,44 @@ Our base model will be a standard `LinearRegression`.
 
 <div align="center">
 
-| Metric           | Train Value | Test Value  |
-|------------------|-------------|-------------|
-| RSME             | 0.064461    | 0.064447    |
-| R-Squared        | -0.003557   | -0.003356   |
-| MAE              | 0.052601    | 0.052608    |
+| Metric      | Train Value      | Test Value  |
+|-------------|------------------|-------------|
+| RMSE        | 0.035458         | 3.76e+09    |
+| R-Squared   | 0.703255         | -3.35e+21   |
+| MAE         | 0.031156         | 9.20e+07    |
 
 </div>
+
 
 Our error metrics don't look too bad, but the $R^2$ is way off! Let's try other models to see how our predictions can improve.
 
 We will keep these metrics in mind as we test other models.
 
-> Even after dropping a significant amount of features, we are left with fairly high dimentionality with **4425 features**. This is something we will want to consider as we test and refine our models.
+> Even after dropping a significant amount of features, we are left with fairly high dimentionality. This is something we will want to consider as we test and refine our models.
 
 ## Modeling
 
 With our base metrics defined, we can finetune the base and try other models to improve our metrics. A custom class is used to cross validate and tune our parameters with an option to use `RandomizedSearchCV` or `gp_minimize`. For those cases where hyperparameter tuning isn't necessary, there is an option to only cross validate.
 
-We will start by testing different linear modesl with regularization techniques to address our moderate $R^2$ and improve our error metrics in this high dimensional space. 
+We will start by testing different regularization techniques to address our moderate $R^2$ and improve our error metrics in this high dimensional space. 
 
 ### <div align="center">Lasso Regularization</div>
-
-Let's see if we can improve our metrics with a linear model as well as utilize the feature selection capabilities.
 
 <div align="center">
 
 | Model Name | Val Train RMSE | Val Test RMSE |
 |------------|----------------|---------------|
-| Lasso      | 0.060729       | 0.060735      |
+| Lasso      | 0.058979       | 0.058993      |
 
 </div>
 <div align="center">
 
-| Model Name | Train RMSE | Test RMSE | Train R2 | Test R2  | Train MAE | Test MAE  |
-|------------|------------|-----------|----------|----------|-----------|-----------|
-| Lasso      | 0.046876   | 0.046855  | 0.469300 | 0.469648 | 0.039506  | 0.039506  |
+| Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
 
 </div>
-
-It looks like the metrics are a lot more balanced! The primary RMSE metric is pretty good. However, it is expected that it would be small considering the range of our HDI so we will aim to improve these further. $R^2$ can also stand to improve, though it looks a lot better than our base model. Thankfully, there isn't much overfitting or underfitting.
+It looks like the metrics are a lot more balanced and the error metrics look pretty good! However, the $R^2$ could stand to improve.
 
 ### <div align="center">Ridge Regularization</div>
 
@@ -232,72 +230,71 @@ It looks like the metrics are a lot more balanced! The primary RMSE metric is pr
 
 | Model Name | Val Train RMSE | Val Test RMSE |
 |------------|----------------|---------------|
-| Ridge      | 0.041158       | 0.041759      |
-| Lasso      | 0.060729       | 0.060735      |
+| Ridge      | 0.041346       | 0.042492      |
+| Lasso      | 0.058979       | 0.058993      |
 
 </div>
 <div align="center">
 
 | Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Ridge      | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
-| Lasso      | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
+| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
+| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
 
 </div>
+The metrics look better, there is some light overfitting but not too concerning.
 
-The Ridge model definitely helped lower the error metrics as well as raise $R^2$ vs the Lasso model! It would be best to try to raise the $R^2$ some more while keeping error metrics low..
+### <div align="center">RandomForest</div>
 
-### <div align="center">Neural Network</div>
+Let's see if metrics can improve further with a `RandomForestRegressor`. It's robust algorithm may boost the $R^2$ the way we need.
 
-To address the low $R^2$ and lack of representation of the variance in our data we will work on a neural network using the `keras` within the `tensorflow` library.
-
-> The `KerasRegression` wrapper will be used to insert our neural network into the pipeline.
+> To concerve time and computational resources, we are setting `n_jobs` to -1 for parallel processing,`warm_start` to True, and `bootstrap~ to False to speed up the tuning of the trees.
 
 <div align="center">
 
-| Model Name     | Val Train RMSE | Val Test RMSE |
-|----------------|----------------|---------------|
-| Ridge          | 0.041158       | 0.041759      |
-| Lasso          | 0.060729       | 0.060735      |
-| Neural Network | 0.040854       | 0.042289      |
+| Model Name | Val Train RMSE | Val Test RMSE |
+|------------|----------------|---------------|
+| Ridge      | 0.041346       | 0.042492      |
+| Lasso      | 0.058979       | 0.058993      |
+| Random     | 0.059148       | 0.059364      |
 
 </div>
 <div align="center">
 
-| Model Name     | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
-|----------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Ridge          | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
-| Neural Network | 0.029011   | 0.046562  | 0.796722  | 0.476264  | 0.018909  | 0.034491  |
-| Lasso          | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
+| Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
+| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
+| Random     | 0.049362    | 0.049740  | 0.424886  | 0.412273  | 0.041525  | 0.041819  |
 
 </div>
-Comparing our results not unexpectedly, the Neural Network is overfitting but the train scores are improving! 
+The Random Forest didn't do as well as hoped. The Ridge model is still the best wholistically.
 
 ### <div align="center">VotingRegressor</div>
 
-Let's see if we can get the best of the strongest models so far to get a holistic improvement in metrics. Hopefully this addresses the overfitting seen in the Neural Network while raising our scores.
+Let's try a `VotingRegressor` to see if we can combine the top two models to get better scores.
 
 <div align="center">
 
-| Model Name     | Val Train RMSE | Val Test RMSE |
-|----------------|----------------|---------------|
-| Voting         | 0.036254       | 0.037517      |
-| Ridge          | 0.041158       | 0.041759      |
-| Neural Network | 0.040854       | 0.042289      |
-| Lasso          | 0.060729       | 0.060735      |
+| Model Name | Val Train RMSE | Val Test RMSE |
+|------------|----------------|---------------|
+| Voting     | 0.039153       | 0.040198      |
+| Ridge      | 0.041346       | 0.042492      |
+| Lasso      | 0.058979       | 0.058993      |
+| Random     | 0.059148       | 0.059364      |
 
 </div>
 <div align="center">
 
-| Model Name     | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
-|----------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Ridge          | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
-| Voting         | 0.036248   | 0.036500  | 0.682663  | 0.678172  | 0.032410  | 0.032640  |
-| Neural Network | 0.029011   | 0.046562  | 0.796722  | 0.476264  | 0.018909  | 0.034491  |
-| Lasso          | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
+| Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
+| Voting     | 0.037093    | 0.038013  | 0.675246  | 0.656732  | 0.032543  | 0.033456  |
+| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
+| Random     | 0.049362    | 0.049740  | 0.424886  | 0.412273  | 0.041525  | 0.041819  |
 
 </div>
-The `VotingRegressor` helped with the overfitting, however our scores are about the same as our `Ridge` model. It's possible these models are capturing different types of data. 
+Looks like our Ridge model is still the strongest. 
 
 ### <div align="center">StackingRegressor</div>
 
@@ -305,51 +302,56 @@ Lastly, we will try another ensemble model with the `StackingRegressor`.
 
 <div align="center">
 
-| Model Name     | Val Train RMSE | Val Test RMSE |
-|----------------|----------------|---------------|
-| Voting         | 0.036254       | 0.037517      |
-| Ridge          | 0.041158       | 0.041759      |
-| Neural Network | 0.040854       | 0.042289      |
-| Lasso          | 0.060729       | 0.060735      |
-| Stacking       | 0.036077       | 0.037500      |
+| Model Name | Val Train RMSE | Val Test RMSE |
+|------------|----------------|---------------|
+| Stacking   | 0.035273       | 0.037075      |
+| Voting     | 0.039153       | 0.040198      |
+| Ridge      | 0.041346       | 0.042492      |
+| Lasso      | 0.058979       | 0.058993      |
+| Random     | 0.059148       | 0.059364      |
 
 </div>
 <div align="center">
 
-| Model Name     | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
-|----------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Stacking       | 0.036072   | 0.036193  | 0.685734  | 0.683563  | 0.032320  | 0.032409  |
-| Ridge          | 0.036414   | 0.036413  | 0.679748  | 0.679690  | 0.032683  | 0.032654  |
-| Voting         | 0.036248   | 0.036500  | 0.682663  | 0.678172  | 0.032410  | 0.032640  |
-| Neural Network | 0.029011   | 0.046562  | 0.796722  | 0.476264  | 0.018909  | 0.034491  |
-| Lasso          | 0.046876   | 0.046855  | 0.469300  | 0.469648  | 0.039506  | 0.039506  |
+| Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
+|------------|------------|-----------|-----------|-----------|-----------|-----------|
+| Stacking   | 0.035495    | 0.036700  | 0.702638  | 0.680030  | 0.031286  | 0.032509  |
+| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
+| Voting     | 0.037093    | 0.038013  | 0.675246  | 0.656732  | 0.032543  | 0.033456  |
+| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
+| Random     | 0.049362    | 0.049740  | 0.424886  | 0.412273  | 0.041525  | 0.041819  |
 
 </div>
 While not a huge improvement all of the metrics improved slightly with the `StackingRegressor`.
 
 ### <div align="center">Final Testing</div>
 
+#### <div align="center">Base Test Metrics</div>
 <div align="center">
 
-| Model Name        | Test RMSE | Test R2   | Test MAE  |
-|-------------------|-----------|-----------|-----------|
-| Stacking Holdout  | 0.037734  | 0.662524  | 0.033406  |
-| Base Holdout      | 0.066138  | -0.036768 | 0.053976  |
-
-</div>
-<div align="center">
-
-| Model Name    | Test RMSE | Test R2   | Test MAE  |
-|---------------|-----------|-----------|-----------|
-| Stacking Test | 0.037743  | 0.662622  | 0.033416  |
-| Base Test     | 0.066209  | -0.038177 | 0.054052  |
+| Metric      | Test Value           |
+|-------------|----------------------|
+| RMSE        | 1.507344252e+09      |
+| R-Squared   | -5.406010504e+20     |
+| MAE         | 1.9662972e+07        |
 
 </div>
 
+#### <div align="center">Stacking Test Metrics</div>
+<div align="center">
 
+| Metric      | Test Value   |
+|-------------|--------------|
+| RMSE        | 0.035621     |
+| R-Squared   | 0.698092     |
+| MAE         | 0.031485     |
+
+</div>
 Looks like all of our results line up as expected when compared to the stacking model!
 
 ## Final Evaluation & Conclusion
+
+The `StackingRegressor` is the best model, while not much better than our `Ridge` model, it shows both lower error and higher $R^2$. Overall, it provides us with a holistic improvement. While $R^2$ is relatively low when looking at the training metrics, after predicting on our holdout and test data, which includes significantly more records, we can see our scores are reflecting a fairly stable model. 
 
 **Recommendations**
 
