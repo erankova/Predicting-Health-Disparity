@@ -366,13 +366,14 @@ We also had to drop the year associeated with each record. In the future, we wou
 
 ### Repository Structure
 
-├── Data
-├── Images
+├── data
+├── images
+├── model
+├── src
 ├── .gitignore
 ├── Predicting_Health_Disparity.pdf
 ├── Predicting_Health_Disparity.ipynb
 └── README.md
-
 
 
 
