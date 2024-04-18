@@ -1,11 +1,10 @@
+notebooks
 X_processed.csv
 hdi_model.pkl
 final_df.csv
 __pycache__
 Env_Requirements
-metrics_cv.py
 requirements.txt
-Deployment.py
 environment.yml
 .gitattributes
 Data/df_pw_idx.csv
