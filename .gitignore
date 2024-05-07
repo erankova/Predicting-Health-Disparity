@@ -3,9 +3,6 @@ X_processed.csv
 hdi_model.pkl
 final_df.csv
 __pycache__
-Env_Requirements
-requirements.txt
-environment.yml
 .gitattributes
 Data/df_pw_idx.csv
 Data/PLACES_2020-2021.csv
