@@ -68,14 +68,14 @@ Before moving onto defining the target, the numerical distribution of the `Data_
 
 | Statistic | Data_Value  | TotalPopulation |
 |-----------|-------------|-----------------|
-| count     | 808694.000  | 808694.000      |
-| mean      | 30.404      | 103356.9        |
-| std       | 24.767      | 331892.8        |
+| count     | 808,694.000 | 808,694.000     |
+| mean      | 30.404      | 103,356.9       |
+| std       | 24.767      | 331,892.8       |
 | min       | 0.000       | 57.0            |
-| 25%       | 10.700      | 10806.0         |
-| 50%       | 22.100      | 25629.0         |
-| 75%       | 40.200      | 67490.0         |
-| max       | 99.400      | 10105520.0      |
+| 25%       | 10.700      | 10,806.0        |
+| 50%       | 22.100      | 25,629.0        |
+| 75%       | 40.200      | 67,490.0        |
+| max       | 99.400      | 10,105,520.0    |
 
 </div>
 ``
@@ -100,21 +100,18 @@ Taking closer at the number of rows that are outside of the the IQR, there are q
 
 </div>
 
-
-
 As expected, the `Data_Value_Type` impacts the `Data_Value` outliers
 
 <div align="center">
 
-| Metric               | Outliers |
-|----------------------|----------|
-| Crude Prevalence     | 2,117    |
-| Percentage           | 610      |
-| **Total Outliers**   | **5,661**|
+| Type of Outlier          | Count  |
+|--------------------------|--------|
+| Age-Adjusted Prevalence  | 2,934  |
+| Crude Prevalence         | 2,117  |
+| Percentage Outliers      | 610    |
+| **Total Outliers**       | **5,661** |
 
 </div>
-
-
 
 > Population doesn't demonstrate the same diffence so we can treat TotalPopulation collectively in the dataset.
 
@@ -182,11 +179,11 @@ Our base model will be a standard `LinearRegression`.
 
 <div align="center">
 
-| Metric      | Train Value      | Test Value  |
-|-------------|------------------|-------------|
-| RMSE        | 0.035458         | 3.76e+09    |
-| R-Squared   | 0.703255         | -3.35e+21   |
-| MAE         | 0.031156         | 9.20e+07    |
+| Metric      | Train Value      | Test Value             |
+|-------------|------------------|------------------------|
+| RMSE        | 0.035860         | 1.680356e+08           |
+| R-Squared   | 0.696561         | -6.707181e+18          |
+| MAE         | 0.031631         | 1.909482e+06           |
 
 </div>
 
@@ -209,14 +206,14 @@ We will start by testing different regularization techniques to address our mode
 
 | Model Name | Val Train RMSE | Val Test RMSE |
 |------------|----------------|---------------|
-| Lasso      | 0.058979       | 0.058993      |
+| Lasso      | 0.06356        | 0.06356       |
 
 </div>
 <div align="center">
 
 | Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
+| Lasso      | 0.05893    | 0.05877   | 0.18064   | 0.17953   | 0.04830   | 0.04841   |
 
 </div>
 It looks like the metrics are a lot more balanced and the error metrics look pretty good! However, the $R^2$ could stand to improve.
@@ -227,16 +224,16 @@ It looks like the metrics are a lot more balanced and the error metrics look pre
 
 | Model Name | Val Train RMSE | Val Test RMSE |
 |------------|----------------|---------------|
-| Ridge      | 0.041346       | 0.042492      |
-| Lasso      | 0.058979       | 0.058993      |
+| Ridge      | 0.04136        | 0.04210       |
+| Lasso      | 0.06356        | 0.06356       |
 
 </div>
 <div align="center">
 
 | Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
-| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
+| Ridge      | 0.03583    | 0.03672   | 0.69706   | 0.67978   | 0.03162   | 0.03247   |
+| Lasso      | 0.05893    | 0.05877   | 0.18064   | 0.17953   | 0.04830   | 0.04841   |
 
 </div>
 The metrics look better, there is some light overfitting but not too concerning.
@@ -251,18 +248,18 @@ Let's see if metrics can improve further with a `RandomForestRegressor`. It's ro
 
 | Model Name | Val Train RMSE | Val Test RMSE |
 |------------|----------------|---------------|
-| Ridge      | 0.041346       | 0.042492      |
-| Lasso      | 0.058979       | 0.058993      |
-| Random     | 0.059148       | 0.059364      |
+| Ridge      | 0.04136        | 0.04210       |
+| Random     | 0.05784        | 0.05806       |
+| Lasso      | 0.06356        | 0.06356       |
 
 </div>
 <div align="center">
 
 | Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
-| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
-| Random     | 0.049362    | 0.049740  | 0.424886  | 0.412273  | 0.041525  | 0.041819  |
+| Ridge      | 0.03583    | 0.03672   | 0.69706   | 0.67978   | 0.03162   | 0.03247   |
+| Random     | 0.05293    | 0.05316   | 0.33885   | 0.32879   | 0.04423   | 0.04458   |
+| Lasso      | 0.05893    | 0.05877   | 0.18064   | 0.17953   | 0.04830   | 0.04841   |
 
 </div>
 The Random Forest didn't do as well as hoped. The Ridge model is still the best wholistically.
@@ -275,20 +272,20 @@ Let's try a `VotingRegressor` to see if we can combine the top two models to get
 
 | Model Name | Val Train RMSE | Val Test RMSE |
 |------------|----------------|---------------|
-| Voting     | 0.039153       | 0.040198      |
-| Ridge      | 0.041346       | 0.042492      |
-| Lasso      | 0.058979       | 0.058993      |
-| Random     | 0.059148       | 0.059364      |
+| Voting     | 0.03949        | 0.04018       |
+| Ridge      | 0.04136        | 0.04210       |
+| Random     | 0.05784        | 0.05806       |
+| Lasso      | 0.06356        | 0.06356       |
 
 </div>
 <div align="center">
 
 | Model Name | Train RMSE | Test RMSE | Train R2  | Test R2   | Train MAE | Test MAE  |
 |------------|------------|-----------|-----------|-----------|-----------|-----------|
-| Ridge      | 0.035443    | 0.036744  | 0.703507  | 0.679265  | 0.031188  | 0.032503  |
-| Voting     | 0.037093    | 0.038013  | 0.675246  | 0.656732  | 0.032543  | 0.033456  |
-| Lasso      | 0.046883    | 0.046777  | 0.481212  | 0.480208  | 0.039182  | 0.039235  |
-| Random     | 0.049362    | 0.049740  | 0.424886  | 0.412273  | 0.041525  | 0.041819  |
+| Ridge      | 0.03583    | 0.03672   | 0.69706   | 0.67978   | 0.03162   | 0.03247   |
+| Voting     | 0.03744    | 0.03810   | 0.66916   | 0.65510   | 0.03280   | 0.03353   |
+| Random     | 0.05293    | 0.05316   | 0.33885   | 0.32879   | 0.04423   | 0.04458   |
+| Lasso      | 0.05893    | 0.05877   | 0.18064   | 0.17953   | 0.04830   | 0.04841   |
 
 </div>
 Looks like our Ridge model is still the strongest. 
@@ -326,11 +323,11 @@ While not a huge improvement all of the metrics improved slightly with the `Stac
 #### <div align="center">Base Test Metrics</div>
 <div align="center">
 
-| Metric      | Test Value           |
-|-------------|----------------------|
-| RMSE        | 1.507344252e+09      |
-| R-Squared   | -5.406010504e+20     |
-| MAE         | 1.9662972e+07        |
+| Metric      | Test Value               |
+|-------------|--------------------------|
+| RMSE        | 168,035,577.290          |
+| R-Squared   | -6.707e+18               |
+| MAE         | 1,909,482.015            |
 
 </div>
 
@@ -339,9 +336,9 @@ While not a huge improvement all of the metrics improved slightly with the `Stac
 
 | Metric      | Test Value   |
 |-------------|--------------|
-| RMSE        | 0.035621     |
-| R-Squared   | 0.698092     |
-| MAE         | 0.031485     |
+| RMSE        | 0.036705     |
+| R-Squared   | 0.679978     |
+| MAE         | 0.032477     |
 
 </div>
 Looks like all of our results line up as expected when compared to the stacking model!
