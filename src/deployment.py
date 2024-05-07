@@ -81,15 +81,10 @@ st.markdown('''
 st.sidebar.header('Input Features')
 
 # Sort states and set them for the selectbox
-# states = pd.Series(X['StateAbbr'].unique()).sort_values().tolist()
 states = X['StateAbbr'].unique().sort_values().tolist()
 state = st.sidebar.selectbox('Select State', states)
 
-# # Filtering the DataFrame to the selected state
-# filtered_df = X[X['StateAbbr'] == state]
-
 # Filter the DataFrame based on the selected state and sort the counties
-# counties = pd.Series(X[X['StateAbbr'] == state]['LocationName'].unique()).sort_values().tolist()
 counties = sorted(X[X['StateAbbr'] == state]['LocationName'].unique())
 county = st.sidebar.multiselect('Select County', counties)
 
@@ -143,7 +138,6 @@ if st.session_state['predict_clicked']:
                                                         'GeoPop','PopWeight','Data_Value','Data_Value_Type','Geometry'])
 
             # Visualizing prediction dataframe
-            # prediction_df_filtered['Geolocation'] = prediction_df['Geolocation'].astype('str')
             grouped_df = prediction_df_filtered.groupby(by=['LocationName','Category','Short_Question_Text']).mean().reset_index()
             st.write(grouped_df)
             with st.expander('Expand for Measure Details'):
