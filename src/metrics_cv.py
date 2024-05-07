@@ -69,7 +69,12 @@ class MetricsCV():
         val_score_dict = {'Model Name': self.name,
                           'Val Train RMSE': self.cv_train_mean,
                           'Val Test RMSE': self.cv_test_mean}
-        new_val_df = pd.DataFrame([val_score_dict]) 
+        
+        new_val_df = pd.DataFrame([val_score_dict])
+
+        # Set display format for all floating point numbers in pandas
+        for col in new_val_df.select_dtypes(include=[float, int]).columns:
+            new_val_df[col] = new_val_df[col].apply(lambda x: f"{x:.5f}" if x < 1 else x)
         
         if val_df is not None:
             new_val_df = pd.concat([val_df, new_val_df])
@@ -141,6 +146,10 @@ class MetricsCV():
                           'Val Test RMSE': -best_test_score}
 
         new_val_df = pd.DataFrame([val_score_dict])
+
+        # Set display format for all floating point numbers in pandas
+        for col in new_val_df.select_dtypes(include=[float, int]).columns:
+            new_val_df[col] = new_val_df[col].apply(lambda x: f"{x:.5f}" if x < 1 else x)
         
         if val_df is not None:
             new_val_df = pd.concat([val_df, new_val_df])
@@ -187,7 +196,12 @@ class MetricsCV():
         val_score_dict = {'Model Name': self.name,
                           'Val Train RMSE': self.cv_train_mean,
                           'Val Test RMSE': self.cv_test_mean}
-        new_val_df = pd.DataFrame([val_score_dict]) 
+        
+        new_val_df = pd.DataFrame([val_score_dict])
+
+        # Set display format for all floating point numbers in pandas
+        for col in new_val_df.select_dtypes(include=[float, int]).columns:
+            new_val_df[col] = new_val_df[col].apply(lambda x: f"{x:.5f}" if x < 1 else x)
         
         if val_df is not None:
             new_val_df = pd.concat([val_df, new_val_df])
@@ -227,7 +241,10 @@ class MetricsCV():
                            'Train MAE': mae_train,
                            'Test MAE': mae_test}
         
-        new_test_df = pd.DataFrame([test_score_dict]) 
+        new_test_df = pd.DataFrame([test_score_dict])
+        
+        for col in new_test_df.select_dtypes(include=[float, int]).columns:
+            new_test_df[col] = new_test_df[col].apply(lambda x: f"{x:.5f}" if x < 1 else x)
     
         if test_df is not None:
             new_test_df = pd.concat([test_df, new_test_df], ignore_index=True)
