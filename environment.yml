@@ -337,6 +337,7 @@ dependencies:
       - cramjam==2.8.3
       - flatbuffers==24.3.25
       - gast==0.5.4
+      - geopandas==0.14.3
       - google-pasta==0.2.0
       - grpcio==1.62.1
       - h5py==3.11.0
