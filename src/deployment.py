@@ -10,13 +10,6 @@ import matplotlib.pyplot as plt
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import Ridge
 from sklearn.ensemble import VotingRegressor, StackingRegressor
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Input
-from tensorflow.keras.regularizers import l1, l2, l1_l2
-from scikeras.wrappers import KerasRegressor
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 # First Streamlit command in the script
 st.set_page_config(page_title='Health Disparity Across US Counties', layout='centered')
@@ -29,7 +22,6 @@ if 'predict_clicked' not in st.session_state:
 seed_value = 42
 np.random.seed(seed_value)
 random.seed(seed_value)
-tf.random.set_seed(seed_value)
 
 
 # Function to load the model from a .pkl file
@@ -145,8 +137,8 @@ if st.session_state['predict_clicked']:
             
             # Defining and visualizing prediction geolocation
             prediction_gdf = load_geo_data(prediction_df)
-            prediction_df['latitude'] = prediction_gdf['Geometry'].y
-            prediction_df['longitude'] = prediction_gdf['Geometry'].x
+            prediction_df.loc[:,'latitude'] = prediction_gdf['Geometry'].y
+            prediction_df.loc[:,'longitude'] = prediction_gdf['Geometry'].x
             st.map(prediction_df[['latitude','longitude']],zoom=5)
         except Exception as e:
             st.error("Failed to make prediction. Ensure your input data is correctly formatted.")
