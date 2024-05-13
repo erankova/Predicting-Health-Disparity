@@ -50,7 +50,7 @@ st.write("Current directory:", os.getcwd())
 st.write("Files in current directory:", os.listdir(os.getcwd()))
 
 # Print model directory
-model_dir = os.path.join(os.getcwd(),'cd','model')
+model_dir = os.path.join(os.getcwd(),'model')
 st.write("model directory:", os.listdir(model_dir))
 
 # Try going one directory up and listing files there
