@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pickle
 import pandas as pd
@@ -32,7 +33,8 @@ def load_model(model_path):
     return model
 
 # Path to the pickled model
-model_path = '/Users/elinarankova/Downloads/Data_Science/Capstone/model/hdi_model.pkl' 
+deploy_directory = os.path.dirname(__file__)
+model_path = os.path.join(deploy_directory,'..','model','hdi_model.pkl')
 model = load_model(model_path)
 
 
@@ -52,18 +54,26 @@ def load_geo_data(pandas_df):
     # Dummy function to load GeoDataFrame
     geo_df = gpd.GeoDataFrame(pandas_df, geometry='Geometry')
     return geo_df
-    
-df = load_data('/Users/elinarankova/Downloads/Data_Science/Capstone/data/final_df.csv')
-X = load_data(data_path='/Users/elinarankova/Downloads/Data_Science/Capstone/data/X_raw.csv',
-              dtype_path='/Users/elinarankova/Downloads/Data_Science/Capstone/data/data_types.json')
-measure_reference = load_data('/Users/elinarankova/Downloads/Data_Science/Capstone/data/measure_reference.csv')
+
+# Data paths
+df_path = os.path.join(deploy_directory,'..','data','final_df.csv')
+X_path = os.path.join(deploy_directory,'..','data','X_raw.csv')
+data_type_path = os.path.join(deploy_directory,'..','data','data_types.json')
+measure_path = os.path.join(deploy_directory,'..','data','measure_reference.csv')
+
+df = load_data(df_path)
+X = load_data(data_path=X_path, dtype_path=data_type_path)
+measure_reference = load_data(measure_path)
 df['Geolocation'] = df['Geolocation'].str.upper()
 df['Geometry'] = df['Geolocation'].apply(wkt.loads)
 gdf = load_geo_data(df)
 
+# Image path
+banner_path = os.path.join(deploy_directory,'..','images','Banner.jpeg')
+
 # Streamlit page setup
 st.title('Health Disparity Across US Counties')
-st.image('/Users/elinarankova/Downloads/Data_Science/Capstone/images/Banner.jpeg')
+st.image(banner_path)
 st.write('#### :blue[This program is using data obtained from the PLACES and SDOH data provided by the CDC]')
 st.caption('Timespan: 2017-2021')
 st.markdown('''
