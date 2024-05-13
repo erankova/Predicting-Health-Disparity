@@ -94,7 +94,7 @@ df = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
 measure_reference = load_data(measure_path)
 
-st.write(df_path)
+st.dataframe(df)
 
 df['Geolocation'] = df['Geolocation'].str.upper()
 df['Geometry'] = df['Geolocation'].apply(wkt.loads)
