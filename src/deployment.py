@@ -91,7 +91,7 @@ X_path = os.path.join(base_dir,'data','X_raw.csv')
 data_type_path = os.path.join(base_dir,'data','data_types.json')
 measure_path = os.path.join(base_dir,'data','measure_reference.csv')
 
-df_raw = load_data(df_path)
+df = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
 measure_reference = load_data(measure_path)
 
