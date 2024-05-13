@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+from io import StringIO
 from pathlib import Path
 import streamlit as st
 import pickle
@@ -90,11 +91,15 @@ X_path = os.path.join(base_dir,'data','X_raw.csv')
 data_type_path = os.path.join(base_dir,'data','data_types.json')
 measure_path = os.path.join(base_dir,'data','measure_reference.csv')
 
-df = load_data(df_path)
+df_raw = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
 measure_reference = load_data(measure_path)
 
-df = pd.DataFrame(df)
+# Use StringIO to create a buffer (pandas can read from a buffer as if it were a file)
+data_buffer = StringIO(df_raw)
+
+# Read the data into a DataFrame
+df = pd.read_csv(data_buffer)
 
 df['Geolocation'] = df['Geolocation'].str.upper()
 df['Geometry'] = df['Geolocation'].apply(wkt.loads)
