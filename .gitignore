@@ -1,6 +1,5 @@
 other_notebooks
 X_processed.csv
-final_df.csv
 __pycache__
 .gitattributes
 Data/df_pw_idx.csv
