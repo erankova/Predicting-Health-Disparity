@@ -43,26 +43,26 @@ def load_model(model_path):
         model = pickle.load(file)
     return model
 
-# Print the current working directory
-st.write("Current directory:", os.getcwd())
+# # Print the current working directory
+# st.write("Current directory:", os.getcwd())
 
-# Print all files in the current directory
-st.write("Files in current directory:", os.listdir(os.getcwd()))
+# # Print all files in the current directory
+# st.write("Files in current directory:", os.listdir(os.getcwd()))
 
-# Print model directory
-model_dir = os.path.join(os.getcwd(),'model')
-st.write("model directory:", os.listdir(model_dir))
+# # Print model directory
+# model_dir = os.path.join(os.getcwd(),'model')
+# st.write("model directory:", os.listdir(model_dir))
 
-# Try going one directory up and listing files there
-parent_dir = os.path.join(os.getcwd())
-st.write("Files in parent directory:", os.listdir(parent_dir))
+# # Try going one directory up and listing files there
+# parent_dir = os.path.join(os.getcwd())
+# st.write("Files in parent directory:", os.listdir(parent_dir))
 
 
-model_file = Path(model_path)
-if model_file.exists():
-    st.write("Model file found:", model_path)
-else:
-    st.write("Model file not found at:", model_path)
+# model_file = Path(model_path)
+# if model_file.exists():
+#     st.write("Model file found:", model_path)
+# else:
+#     st.write("Model file not found at:", model_path)
 
 
 model = load_model(model_path)
