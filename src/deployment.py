@@ -95,7 +95,7 @@ df_raw = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
 measure_reference = load_data(measure_path)
 
-type(df_raw)
+st.write(type(df_raw))
 
 # Use StringIO to create a buffer (pandas can read from a buffer as if it were a file)
 data_buffer = StringIO(df_raw)
