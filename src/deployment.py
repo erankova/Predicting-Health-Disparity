@@ -32,9 +32,14 @@ def load_model(model_path):
         model = pickle.load(file)
     return model
 
+
+# Base directory for models could be set as an environment variable
+base_dir = os.getenv('MODEL_BASE_DIR', '/Users/elinarankova/Downloads/Data_Science/Capstone')
+
 # Path to the pickled model
-deploy_directory = os.path.dirname(__file__)
-model_path = os.path.join(deploy_directory,'..','model','hdi_model.pkl')
+# deploy_directory = os.path.dirname(__file__)
+model_path = os.path.join(base_dir,'model','hdi_model.pkl')
+# st.write("Trying to load model from:", model_path)
 model = load_model(model_path)
 
 
@@ -56,10 +61,10 @@ def load_geo_data(pandas_df):
     return geo_df
 
 # Data paths
-df_path = os.path.join(deploy_directory,'..','data','final_df.csv')
-X_path = os.path.join(deploy_directory,'..','data','X_raw.csv')
-data_type_path = os.path.join(deploy_directory,'..','data','data_types.json')
-measure_path = os.path.join(deploy_directory,'..','data','measure_reference.csv')
+df_path = os.path.join(base_dir,'data','final_df.csv')
+X_path = os.path.join(base_dir,'data','X_raw.csv')
+data_type_path = os.path.join(base_dir,'data','data_types.json')
+measure_path = os.path.join(base_dir,'data','measure_reference.csv')
 
 df = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
@@ -69,7 +74,7 @@ df['Geometry'] = df['Geolocation'].apply(wkt.loads)
 gdf = load_geo_data(df)
 
 # Image path
-banner_path = os.path.join(deploy_directory,'..','images','Banner.jpeg')
+banner_path = os.path.join(base_dir,'images','Banner.jpeg')
 
 # Streamlit page setup
 st.title('Health Disparity Across US Counties')
