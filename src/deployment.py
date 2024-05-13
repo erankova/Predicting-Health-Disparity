@@ -43,15 +43,15 @@ def load_model(model_path):
         model = pickle.load(file)
     return model
 
-# Print the current working directory
-st.write("Current directory:", os.getcwd())
+# # Print the current working directory
+# st.write("Current directory:", os.getcwd())
 
-# Print all files in the current directory
-st.write("Files in current directory:", os.listdir(os.getcwd()))
+# # Print all files in the current directory
+# st.write("Files in current directory:", os.listdir(os.getcwd()))
 
-# # Print model directory
-data_dir = os.path.join(os.getcwd(),'data')
-st.write("model directory:", os.listdir(data_dir))
+# # # Print model directory
+# data_dir = os.path.join(os.getcwd(),'data')
+# st.write("model directory:", os.listdir(data_dir))
 
 # # Try going one directory up and listing files there
 # parent_dir = os.path.join(os.getcwd())
@@ -81,7 +81,6 @@ def load_data(data_path,dtype_path=None):
 
 @st.cache_data
 def load_geo_data(pandas_df):
-    # Dummy function to load GeoDataFrame
     geo_df = gpd.GeoDataFrame(pandas_df, geometry='Geometry')
     return geo_df
 
@@ -94,6 +93,9 @@ measure_path = os.path.join(base_dir,'data','measure_reference.csv')
 df = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
 measure_reference = load_data(measure_path)
+
+st.write(df.columns)
+
 df['Geolocation'] = df['Geolocation'].str.upper()
 df['Geometry'] = df['Geolocation'].apply(wkt.loads)
 gdf = load_geo_data(df)
