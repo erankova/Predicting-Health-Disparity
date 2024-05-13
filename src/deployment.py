@@ -1,4 +1,6 @@
 import os
+import sys
+from pathlib import Path
 import streamlit as st
 import pickle
 import pandas as pd
@@ -25,22 +27,28 @@ np.random.seed(seed_value)
 random.seed(seed_value)
 
 
+# Determine if the application is running locally or deployed
+if 'src' in os.path.abspath('.'):
+    # Running in deployment
+    base_dir = os.path.join(os.getcwd(), '..')
+else:
+    # Running locally
+    base_dir = os.path.abspath('.')
 
-# Get the directory where the current script is located
-base_dir = os.path.dirname(os.path.dirname(__file__))
+model_path = os.path.join(base_dir, 'model', 'hdi_model.pkl')
 
-# Path to the pickled model
-# deploy_directory = os.path.dirname(__file__)
-model_path = os.path.join(base_dir,'model','hdi_model.pkl')
-st.write("Current working directory:", os.getcwd())
-
-
-# Function to load the model from a .pkl file
-@st.cache_resource
 def load_model(model_path):
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
     return model
+
+
+model_file = Path(model_path)
+if model_file.exists():
+    st.write("Model file found:", model_path)
+else:
+    st.write("Model file not found at:", model_path)
+
 
 model = load_model(model_path)
 
