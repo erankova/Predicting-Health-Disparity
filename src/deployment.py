@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 from pathlib import Path
 import streamlit as st
 import pickle
@@ -41,6 +42,12 @@ def load_model(model_path):
     with open(model_path, 'rb') as file:
         model = pickle.load(file)
     return model
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info(f"Using base directory: {base_dir}")
+logger.info(f"Model path set to: {model_path}")
 
 
 model_file = Path(model_path)
