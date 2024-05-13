@@ -1,7 +1,6 @@
 other_notebooks
 X_processed.csv
 __pycache__
-.gitattributes
 Data/df_pw_idx.csv
 Data/PLACES_2020-2021.csv
 Data/df_all_clean.csv
