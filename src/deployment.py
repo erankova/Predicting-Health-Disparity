@@ -43,11 +43,15 @@ def load_model(model_path):
         model = pickle.load(file)
     return model
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Print the current working directory
+st.write("Current directory:", os.getcwd())
 
-logger.info(f"Using base directory: {base_dir}")
-logger.info(f"Model path set to: {model_path}")
+# Print all files in the current directory
+st.write("Files in current directory:", os.listdir(os.getcwd()))
+
+# Try going one directory up and listing files there
+parent_dir = os.path.join(os.getcwd(), '..')
+st.write("Files in parent directory:", os.listdir(parent_dir))
 
 
 model_file = Path(model_path)
