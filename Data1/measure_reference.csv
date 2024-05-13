@@ -1,0 +1,48 @@
+MeasureID,Short_Question_Text,Measure
+access2,health insurance,current lack of health insurance among adults aged 18-64 years
+copd,copd,chronic obstructive pulmonary disease among adults aged >=18 years
+csmoking,current smoking,current smoking among adults aged >=18 years
+stroke,stroke,stroke among adults aged >=18 years
+arthritis,arthritis,arthritis among adults aged >=18 years
+obesity,obesity,obesity among adults aged >=18 years
+teethlost,teeth loss,all teeth lost among adults aged >=65 years
+binge,binge drinking,binge drinking among adults aged >=18 years
+bphigh,high blood pressure,high blood pressure among adults aged >=18 years
+bpmed,taking bp medication,taking medicine for high blood pressure control among adults aged >=18 years with high blood pressure
+cancer,cancer (except skin),cancer (excluding skin cancer) among adults aged >=18 years
+casthma,current asthma,current asthma among adults aged >=18 years
+cervical,cervical cancer screening,cervical cancer screening among adult women aged 21-65 years
+chd,coronary heart disease,coronary heart disease among adults aged >=18 years
+checkup,annual checkup,visits to doctor for routine checkup within the past year among adults aged >=18 years
+cholscreen,cholesterol screening,cholesterol screening among adults aged >=18 years
+colon_screen,colorectal cancer screening,"fecal occult blood test, sigmoidoscopy, or colonoscopy among adults aged 50-75 years"
+corem,core preventive services for older men,"older adult men aged >=65 years who are up to date on a core set of clinical preventive services: flu shot past year, ppv shot ever, colorectal cancer screening"
+corew,core preventive services for older women,"older adult women aged >=65 years who are up to date on a core set of clinical preventive services: flu shot past year, ppv shot ever, colorectal cancer screening, and mammogram past 2 years"
+dental,dental visit,visits to dentist or dental clinic among adults aged >=18 years
+diabetes,diabetes,diagnosed diabetes among adults aged >=18 years
+highchol,high cholesterol,high cholesterol among adults aged >=18 years who have been screened in the past 5 years
+kidney,chronic kidney disease,chronic kidney disease among adults aged >=18 years
+lpa,physical inactivity,no leisure-time physical activity among adults aged >=18 years
+mammouse,mammography,mammography use among women aged 50-74 years
+mhlth,mental health,mental health not good for >=14 days among adults aged >=18 years
+phlth,physical health,physical health not good for >=14 days among adults aged >=18 years
+sleep,sleep <7 hours,sleeping less than 7 hours among adults aged >=18 years
+depression,depression,depression among adults aged >=18 years
+teethlost,all teeth lost,all teeth lost among adults aged >=65 years
+ghlth,general health,fair or poor self-rated health status among adults aged >=18 years
+disability,any disability,any disability among adults aged >=18 years
+mobility,mobility disability,mobility disability among adults aged >=18 years
+vision,vision disability,vision disability among adults aged >=18 years
+hearing,hearing disability,hearing disability among adults aged >=18 years
+cognition,cognitive disability,cognitive disability among adults ages >=18 years
+indeplive,independent living disability,independent living disability among adults aged >=18 years
+selfcare,self-care disability,self-care disability among adults aged >=18 years
+hcost,housing cost burden,housing cost burden among households
+pov150,poverty,persons living below 150% of the poverty level
+crowd,crowding,crowding among housing units
+age65,aged 65 years or older,persons aged 65 years or older
+sngpnt,single-parent households,single-parent households
+broad,no broadband,no broadband internet subscription among households
+nohsdp,no high school diploma,no high school diploma among adults aged 25 years or older
+unemp,unemployment,unemployment among people 16 years and older in the labor force
+remnrty,racial or ethnic minority status,persons of racial or ethnic minority status
