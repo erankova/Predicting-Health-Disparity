@@ -25,13 +25,6 @@ np.random.seed(seed_value)
 random.seed(seed_value)
 
 
-# Function to load the model from a .pkl file
-@st.cache_resource
-def load_model(model_path):
-    with open(model_path, 'rb') as file:
-        model = pickle.load(file)
-    return model
-
 
 # Get the directory where the current script is located
 base_dir = os.path.dirname(os.path.dirname(__file__))
@@ -40,6 +33,15 @@ base_dir = os.path.dirname(os.path.dirname(__file__))
 # deploy_directory = os.path.dirname(__file__)
 model_path = os.path.join(base_dir,'model','hdi_model.pkl')
 st.write("Current working directory:", os.getcwd())
+
+
+# Function to load the model from a .pkl file
+@st.cache_resource
+def load_model(model_path):
+    with open(model_path, 'rb') as file:
+        model = pickle.load(file)
+    return model
+
 model = load_model(model_path)
 
 
