@@ -50,7 +50,7 @@ st.write("Current directory:", os.getcwd())
 st.write("Files in current directory:", os.listdir(os.getcwd()))
 
 # Try going one directory up and listing files there
-parent_dir = os.path.join(os.getcwd(), '..')
+parent_dir = os.path.join(os.getcwd(), '..','..')
 st.write("Files in parent directory:", os.listdir(parent_dir))
 
 
