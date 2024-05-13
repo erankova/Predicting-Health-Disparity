@@ -31,7 +31,7 @@ random.seed(seed_value)
 # Determine if the application is running locally or deployed
 if 'src' in os.path.abspath('.'):
     # Running in deployment
-    base_dir = os.path.join(os.getcwd(), '..')
+    base_dir = os.path.join(os.getcwd())
 else:
     # Running locally
     base_dir = os.path.abspath('.')
@@ -48,6 +48,10 @@ st.write("Current directory:", os.getcwd())
 
 # Print all files in the current directory
 st.write("Files in current directory:", os.listdir(os.getcwd()))
+
+# Print model directory
+model_dir = os.path.join(os.getcwd(),'cd','model')
+st.write("model directory:", os.listdir(model_dir)
 
 # Try going one directory up and listing files there
 parent_dir = os.path.join(os.getcwd())
