@@ -31,7 +31,7 @@ random.seed(seed_value)
 # Determine if the application is running locally or deployed
 if 'src' in os.path.abspath('.'):
     # Running in deployment
-    base_dir = os.path.join(os.getcwd(), '..')
+    base_dir = os.path.join(os.getcwd(), '..','..')
 else:
     # Running locally
     base_dir = os.path.abspath('.')
