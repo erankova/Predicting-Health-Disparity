@@ -95,14 +95,6 @@ df_raw = load_data(df_path)
 X = load_data(data_path=X_path, dtype_path=data_type_path)
 measure_reference = load_data(measure_path)
 
-st.write(df_raw.head())
-
-# Use StringIO to create a buffer (pandas can read from a buffer as if it were a file)
-data_buffer = StringIO(df_raw)
-
-# Read the data into a DataFrame
-df = pd.read_csv(data_buffer)
-
 df['Geolocation'] = df['Geolocation'].str.upper()
 df['Geometry'] = df['Geolocation'].apply(wkt.loads)
 gdf = load_geo_data(df)
