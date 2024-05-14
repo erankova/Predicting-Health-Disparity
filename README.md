@@ -7,6 +7,8 @@
 </p>
 <a href="https://www.linkedin.com/pulse/benefits-population-health-management-phm-amazing-charts/">Image Source</a>
 
+The deployed app can be found here: <a href="https://usa-health-disparity.streamlit.app/">Health Disparity Across US Counties</a>
+
 ## Business Problem and Understanding
 
 **Stakeholders:** Company executives specializing in operational expansion to improve public health prevention where it is most needed.
