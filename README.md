@@ -371,9 +371,10 @@ We also had to drop the year associeated with each record. In the future, we wou
 ├── model
 ├── src
 ├── .gitignore
-├── Predicting_Health_Disparity.pdf
 ├── Predicting_Health_Disparity.ipynb
-└── README.md
+├── Predicting_Health_Disparity.pdf
+├── README.md
+└── requirements.txt
 ```
 
 
