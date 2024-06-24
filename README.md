@@ -3,7 +3,7 @@
 **Data Scientist:** Elina Rankova
 
 <p align="center">
-  <img src="https://media.licdn.com/dms/image/C4D12AQE3ln6Z4Mo8Pw/article-cover_image-shrink_720_1280/0/1642087174753?e=1718236800&v=beta&t=etvT9WV2qS3g7hAnCds-vQIn3ob9JqJn9vvB9annTWM">
+  <img src="https://media.licdn.com/dms/image/C4D12AQE3ln6Z4Mo8Pw/article-cover_image-shrink_720_1280/0/1642087174753?e=1724889600&v=beta&t=0t1_0Atp2fVB4nqb8YMj0fxU9RlyL8oZaMUQasyqBdk">
 </p>
 <a href="https://www.linkedin.com/pulse/benefits-population-health-management-phm-amazing-charts/">Image Source</a>
 
